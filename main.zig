@@ -1,6 +1,6 @@
 // !! do not change
 pub const platform = @import("build_options").platform;
-pub const XfitPlatform = @import("build_options").@"build.XfitPlatform";
+pub const XfitPlatform = @import("build_options").@"zig-game-engine-project.engine.XfitPlatform";
 // !!
 // !! windows root.platform only do not change
 pub const UNICODE = false;
