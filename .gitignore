@@ -1,0 +1,7 @@
+/.zig-cache
+/zigwin32/.zig-cache
+/zig-cache
+/zig-out
+xfit/zig-cache
+xfit/zig-out
+/lib

@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug (Windows MSVC)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program":  "${workspaceFolder}/zig-out/bin/XfitTest.exe",
+            "cwd": "${workspaceFolder}/assets",
+            "console": "integratedTerminal",
+            "preLaunchTask": "build zig"
+        }
+    ]
+}

@@ -1,0 +1,3 @@
+[submodule "zig-game-engine-project"]
+	path = zig-game-engine-project
+	url = https://github.com/xfitgd/zig-game-engine-project
