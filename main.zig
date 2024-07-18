@@ -2,10 +2,10 @@
 pub const platform = @import("build_options").platform;
 pub const XfitPlatform = @import("build_options").@"zig-game-engine-project.engine.XfitPlatform";
 // !!
-// !! windows root.platform only do not change
+// !! windows platform only do not change
 pub const UNICODE = false;
 // !!
-// !! android root.platform only do not change
+// !! android platform only do not change
 comptime {
     if (platform == XfitPlatform.android)
         _ = @import("zig-game-engine-project/__android.zig").android.ANativeActivity_createFunc;
