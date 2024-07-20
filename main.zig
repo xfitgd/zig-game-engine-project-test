@@ -20,11 +20,11 @@ const ArrayList = std.ArrayList;
 var gpa = std.heap.GeneralPurposeAllocator(.{}){};
 const allocator = gpa.allocator();
 
-const matrix = @import("zig-game-engine-project/matrix_.zig").matrix;
-const matrix4x4 = @import("zig-game-engine-project/matrix_.zig").matrix4x4;
-const matrix_error = @import("zig-game-engine-project/matrix_.zig").matrix_error;
+const math = @import("zig-game-engine-project/math.zig");
+const matrix = math.matrix;
+const matrix4x4 = math.matrix4x4;
+const matrix_error = math.matrix_error;
 const file = @import("zig-game-engine-project/file.zig");
-const geometry = @import("zig-game-engine-project/geometry.zig");
 
 pub fn xfit_init() void {
     const mat: matrix4x4(f32) = .{ .e = .{
