@@ -26,18 +26,18 @@ const matrix4x4 = math.matrix4x4;
 const matrix_error = math.matrix_error;
 const file = @import("zig-game-engine-project/file.zig");
 
+const graphics = @import("zig-game-engine-project/graphics.zig");
+
+pub var v: graphics.vertex = .{};
+
 pub fn xfit_init() void {
-    const mat: matrix4x4(f32) = .{ .e = .{
-        .{ 1, 2, 3, 4 },
-        .{ 5, 7, 7, 8 },
-        .{ 9, 10, 57, 12 },
-        .{ 13, 14, 15, 16 },
-    } };
+    v.pos = ArrayList(math.vector(f32)).init(allocator);
+    v.pos.append(.{ 0, -0.5, 0, 1 }) catch unreachable;
+    v.pos.append(.{ 0.5, 0.5, 0, 1 }) catch unreachable;
+    v.pos.append(.{ -0.5, 0.5, 0, 1 }) catch unreachable;
+    v.build(graphics.vertex_type.pos);
 
-    const m5 = mat.inverse() catch unreachable;
-
-    system.print("{s}", .{m5});
-    return;
+    graphics.objects.append(&v) catch unreachable;
 }
 
 pub fn xfit_update() void {}
