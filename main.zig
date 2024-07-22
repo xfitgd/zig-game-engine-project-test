@@ -28,16 +28,27 @@ const file = @import("zig-game-engine-project/file.zig");
 
 const graphics = @import("zig-game-engine-project/graphics.zig");
 
-pub var v: graphics.vertex = .{};
+pub var v: graphics.vertices(graphics.color_vertex_2d) = .{};
+pub var objects: ArrayList(*graphics.ivertices) = ArrayList(*graphics.ivertices).init(allocator);
 
 pub fn xfit_init() void {
-    v.pos = ArrayList(math.vector(f32)).init(allocator);
-    v.pos.append(.{ 0, -0.5, 0, 1 }) catch unreachable;
-    v.pos.append(.{ 0.5, 0.5, 0, 1 }) catch unreachable;
-    v.pos.append(.{ -0.5, 0.5, 0, 1 }) catch unreachable;
-    v.build(graphics.vertex_type.pos);
+    v = graphics.vertices(graphics.color_vertex_2d).init(allocator);
+    v.array.append(.{
+        .pos = .{ 0, -0.5 },
+        .color = .{ 1, 0, 0, 1 },
+    }) catch unreachable;
+    v.array.append(.{
+        .pos = .{ 0.5, 0.5 },
+        .color = .{ 0, 1, 0, 1 },
+    }) catch unreachable;
+    v.array.append(.{
+        .pos = .{ -0.5, 0.5 },
+        .color = .{ 0, 0, 1, 1 },
+    }) catch unreachable;
+    v.build();
 
-    graphics.objects.append(&v) catch unreachable;
+    objects.append(&v.interface) catch unreachable;
+    graphics.scene = &objects.items;
 }
 
 pub fn xfit_update() void {}
