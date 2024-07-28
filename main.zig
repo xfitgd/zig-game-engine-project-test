@@ -45,7 +45,7 @@ pub fn xfit_init() void {
         .pos = .{ -0.5, 0.5 },
         .color = .{ 0, 0, 1, 1 },
     }) catch unreachable;
-    v.build();
+    v.build() catch unreachable;
 
     objects.append(&v.interface) catch unreachable;
     graphics.scene = &objects.items;
@@ -53,7 +53,9 @@ pub fn xfit_init() void {
 
 pub fn xfit_update() void {}
 
-pub fn xfit_destroy() void {}
+pub fn xfit_destroy() void {
+    v.destroy();
+}
 
 pub fn xfit_activate() void {}
 
