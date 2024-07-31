@@ -1,5 +1,5 @@
 #version 450
-#extension GL_EXT_debug_printf : enable
+//#extension GL_EXT_debug_printf : enable
 layout(location = 0) in vec2 inPosition;
 layout(location = 1) in vec4 inColor;
 layout(location = 0) out vec4 fragColor;
@@ -7,6 +7,6 @@ layout(location = 0) out vec4 fragColor;
 
 void main() {
     gl_Position = vec4(inPosition, 0.0, 1.0);
-    debugPrintfEXT("pos %f %f color %f %f %f %f\n", inPosition.x,inPosition.y, inColor.x,inColor.y,inColor.z,inColor.w);
+    //debugPrintfEXT("pos %f %f color %f %f %f %f\n", inPosition.x,inPosition.y, inColor.x,inColor.y,inColor.z,inColor.w);
     fragColor = inColor;
 }

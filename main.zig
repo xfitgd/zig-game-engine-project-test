@@ -55,6 +55,7 @@ pub fn xfit_update() void {}
 
 pub fn xfit_destroy() void {
     v.destroy();
+    objects.deinit();
 }
 
 pub fn xfit_activate() void {}
@@ -64,6 +65,6 @@ pub fn xfit_closing() bool {
 }
 
 pub fn main() void {
-    const init_setting: system.init_setting = .{ .window_width = 600, .window_height = 400, .maxframe = 1000000000 * 240 };
+    const init_setting: system.init_setting = .{ .window_width = 600, .window_height = 400, .maxframe = system.sec_to_nano_sec(240, 0) };
     xfit.xfit_main(&init_setting);
 }
