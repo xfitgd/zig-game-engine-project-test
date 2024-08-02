@@ -30,58 +30,55 @@ const file = @import("zig-game-engine-project/file.zig");
 
 const graphics = @import("zig-game-engine-project/graphics.zig");
 
-pub var v: *graphics.vertices(graphics.color_vertex_2d) = undefined;
-pub var i: *graphics.indices16 = undefined;
-pub var o: *graphics.shape2d = undefined;
 pub var objects: ArrayList(*graphics.iobject) = ArrayList(*graphics.iobject).init(allocator);
-pub var mem_pool: MemoryPool(graphics.dummy_vertices) = MemoryPool(graphics.dummy_vertices).init(allocator);
-pub var mem_pool2: MemoryPool(graphics.dummy_object) = MemoryPool(graphics.dummy_object).init(allocator);
-pub var mem_pool3: MemoryPool(graphics.dummy_indices) = MemoryPool(graphics.dummy_indices).init(allocator);
+pub var vertices_mem_pool: MemoryPool(graphics.dummy_vertices) = MemoryPool(graphics.dummy_vertices).init(allocator);
+pub var objects_mem_pool: MemoryPool(graphics.dummy_object) = MemoryPool(graphics.dummy_object).init(allocator);
+pub var indices_mem_pool: MemoryPool(graphics.dummy_indices) = MemoryPool(graphics.dummy_indices).init(allocator);
 
 pub fn xfit_init() void {
-    v = graphics.take_vertices(v, mem_pool.create() catch unreachable);
-    o = graphics.take_object(o, mem_pool2.create() catch unreachable);
-    i = graphics.take_indices(i, mem_pool3.create() catch unreachable);
-    o.* = graphics.shape2d.init();
-    v.* = graphics.vertices(graphics.color_vertex_2d).init(allocator);
-    i.* = graphics.indices16.init(allocator);
-    v.*.array.append(.{
+    const vertices = graphics.take_vertices(*graphics.vertices(graphics.color_vertex_2d), vertices_mem_pool.create() catch unreachable);
+    const indices = graphics.take_indices(*graphics.indices16, indices_mem_pool.create() catch unreachable);
+    const object = graphics.take_object(*graphics.shape2d, objects_mem_pool.create() catch unreachable);
+    object.* = graphics.shape2d.init();
+    vertices.* = graphics.vertices(graphics.color_vertex_2d).init(allocator);
+    indices.* = graphics.indices16.init(allocator);
+    vertices.*.array.append(.{
         .pos = .{ -0.5, -0.5 },
         .color = .{ 1, 0, 0, 1 },
     }) catch unreachable;
-    v.*.array.append(.{
+    vertices.*.array.append(.{
         .pos = .{ 0.5, -0.5 },
         .color = .{ 0, 1, 0, 1 },
     }) catch unreachable;
-    v.*.array.append(.{
+    vertices.*.array.append(.{
         .pos = .{ -0.5, 0.5 },
         .color = .{ 0, 0, 1, 1 },
     }) catch unreachable;
-    v.*.array.append(.{
+    vertices.*.array.append(.{
         .pos = .{ 0.5, 0.5 },
         .color = .{ 1, 1, 1, 1 },
     }) catch unreachable;
-    i.*.array.appendSlice(&[_]u16{ 0, 1, 2, 1, 3, 2 }) catch unreachable;
-    v.*.build(.read_gpu);
-    i.*.build(.read_gpu);
+    indices.*.array.appendSlice(&[_]u16{ 0, 1, 2, 1, 3, 2 }) catch unreachable;
+    vertices.*.build(.read_gpu);
+    indices.*.build(.read_gpu);
 
-    //system.print("{d}\n", .{@sizeOf(graphics.vertices(u8))});
-
-    o.vertices = v;
-    o.indices = i;
-    objects.append(&o.interface) catch unreachable;
+    object.vertices = vertices;
+    object.indices = indices;
+    objects.append(&object.interface) catch unreachable;
     graphics.scene = &objects.items;
 }
 
 pub fn xfit_update() void {}
 
 pub fn xfit_destroy() void {
-    v.*.deinit();
-    i.*.deinit();
+    const ivertices = objects.items[0].*.get_ivertices(objects.items[0]);
+    const iindices = objects.items[0].*.get_iindices(objects.items[0]);
+    ivertices.?.*.deinit(ivertices.?);
+    iindices.?.*.deinit(iindices.?);
     objects.deinit();
-    mem_pool.deinit();
-    mem_pool2.deinit();
-    mem_pool3.deinit();
+    vertices_mem_pool.deinit();
+    objects_mem_pool.deinit();
+    indices_mem_pool.deinit();
 }
 
 pub fn xfit_activate() void {}
