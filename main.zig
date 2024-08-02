@@ -61,12 +61,7 @@ pub fn xfit_init() void {
         .pos = .{ 0.5, 0.5 },
         .color = .{ 1, 1, 1, 1 },
     }) catch unreachable;
-    i.*.array.append(0) catch unreachable;
-    i.*.array.append(1) catch unreachable;
-    i.*.array.append(2) catch unreachable;
-    i.*.array.append(1) catch unreachable;
-    i.*.array.append(3) catch unreachable;
-    i.*.array.append(2) catch unreachable;
+    i.*.array.appendSlice(&[_]u16{ 0, 1, 2, 1, 3, 2 }) catch unreachable;
     v.*.build(.read_gpu);
     i.*.build(.read_gpu);
 
