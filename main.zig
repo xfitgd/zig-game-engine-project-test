@@ -15,6 +15,7 @@ comptime {
 const std = @import("std");
 const xfit = @import("zig-game-engine-project/xfit.zig");
 const system = @import("zig-game-engine-project/system.zig");
+const builtin = @import("builtin");
 
 const ArrayList = std.ArrayList;
 const MemoryPool = std.heap.MemoryPool;
@@ -24,8 +25,6 @@ const allocator = gpa.allocator();
 const math = @import("zig-game-engine-project/math.zig");
 const mem = @import("zig-game-engine-project/mem.zig");
 const matrix = math.matrix;
-const matrix4x4 = math.matrix4x4;
-const matrix_error = math.matrix_error;
 const file = @import("zig-game-engine-project/file.zig");
 
 const graphics = @import("zig-game-engine-project/graphics.zig");
@@ -79,6 +78,8 @@ pub fn xfit_destroy() void {
     vertices_mem_pool.deinit();
     objects_mem_pool.deinit();
     indices_mem_pool.deinit();
+
+    if (builtin.mode == .Debug and gpa.deinit() != .ok) unreachable;
 }
 
 pub fn xfit_activate() void {}
