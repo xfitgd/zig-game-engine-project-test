@@ -18,5 +18,5 @@ fn callback(result: *std.Build.Step.Compile) void {
 
 pub fn build(b: *std.Build) void {
     const platform = b.option(XfitPlatform, "platform", "build platform") orelse PLATFORM;
-    engine.init(b, platform, OPTIMIZE, callback);
+    engine.init(b, platform, b.standardOptimizeOption(.{ .preferred_optimize_mode = OPTIMIZE }), callback);
 }
