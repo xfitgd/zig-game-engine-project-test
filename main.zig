@@ -82,7 +82,10 @@ pub fn xfit_destroy() void {
     if (builtin.mode == .Debug and gpa.deinit() != .ok) unreachable;
 }
 
-pub fn xfit_activate() void {}
+pub fn xfit_activate(is_activate: bool, is_pause: bool) void {
+    _ = is_activate;
+    _ = is_pause;
+}
 
 pub fn xfit_closing() bool {
     return true;
