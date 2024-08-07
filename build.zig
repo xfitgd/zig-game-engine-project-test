@@ -6,7 +6,7 @@ pub const XfitPlatform = engine.XfitPlatform;
 //* User Setting
 //크로스 플랫폼 빌드시 zig build -Dtarget=aarch64-windows(linux)
 //x86_64-windows(linux)
-//? Android 쪽은 한번 테스트하고 안해서(Windows쪽 완성되면 할 예정) 버그 있을 겁니다.
+// Android 쪽은 한번 테스트하고 안해서(Windows쪽 완성되면 할 예정) 버그 있을 겁니다.
 const PLATFORM = XfitPlatform.windows;
 const OPTIMIZE = std.builtin.OptimizeMode.Debug;
 //*
