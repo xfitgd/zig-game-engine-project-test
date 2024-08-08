@@ -41,10 +41,14 @@ pub fn xfit_init() void {
     const vertices = graphics.take_vertices(*graphics.vertices(graphics.color_vertex_2d), vertices_mem_pool.create() catch unreachable);
     const indices = graphics.take_indices(*graphics.indices16, indices_mem_pool.create() catch unreachable);
     const object = graphics.take_object(*graphics.shape2d, objects_mem_pool.create() catch unreachable);
+    const object2 = graphics.take_object(*graphics.shape2d, objects_mem_pool.create() catch unreachable);
+    const object3 = graphics.take_object(*graphics.shape2d, objects_mem_pool.create() catch unreachable);
     g_proj = graphics.projection.init(.perspective, std.math.degreesToRadians(45)) catch unreachable;
     g_camera = graphics.camera.init(.{ 0, 0, -3, 1 }, .{ 0, 0, 0, 1 }, .{ 0, 1, 0, 1 });
 
     object.* = graphics.shape2d.init();
+    object2.* = graphics.shape2d.init();
+    object3.* = graphics.shape2d.init();
     vertices.* = graphics.vertices(graphics.color_vertex_2d).init(allocator);
     indices.* = graphics.indices.init(allocator);
     vertices.*.array.append(.{
@@ -67,13 +71,19 @@ pub fn xfit_init() void {
     vertices.*.build(.read_gpu);
     indices.*.build(.read_gpu);
 
-    object.interface.transform.camera = &g_camera;
-    object.interface.transform.projection = &g_proj;
-    object.build(.readwrite_cpu);
+    for ([3]*graphics.shape2d{ object, object2, object3 }) |value| {
+        value.*.interface.transform.camera = &g_camera;
+        value.*.interface.transform.projection = &g_proj;
+        value.*.build(.readwrite_cpu);
+        value.*.vertices = vertices;
+        value.*.indices = indices;
+        objects.append(&value.*.interface) catch unreachable;
+    }
+    object2.*.interface.transform.model = matrix.translation(-3, 0, 3);
+    object3.*.interface.transform.model = matrix.translation(3, 0, 3);
+    object2.*.interface.transform.map_update();
+    object3.*.interface.transform.map_update();
 
-    object.vertices = vertices;
-    object.indices = indices;
-    objects.append(&object.interface) catch unreachable;
     graphics.scene = &objects.items;
 }
 
