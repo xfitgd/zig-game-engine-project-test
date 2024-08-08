@@ -87,23 +87,16 @@ pub fn xfit_init() void {
     graphics.scene = &objects.items;
 }
 
-//g_proj은 렌더 스레드 내에서 처리해야 해서 Semaphore를 사용해 창 사이즈 바뀔 시 통보 받는 식으로 처리함.
-var size_update_sem: std.Thread.Semaphore = .{};
-pub fn xfit_update() void {
-    var need_size_update = true;
-    size_update_sem.timedWait(0) catch {
-        need_size_update = false; //?need_size_update 변수를 안쓰는 방법이 있나..?
-    };
-    if (need_size_update) {
-        //system.print_debug("need size update\n", .{});
-        g_proj.init_matrix(.perspective, std.math.degreesToRadians(45)) catch unreachable;
-        g_proj.map_update();
-    }
+///윈도우 크기 바뀔때 xfit_update 바로 전 호출
+pub fn xfit_size_update() void {
+    //system.print_debug("size update\n", .{});
+    g_proj.init_matrix(.perspective, std.math.degreesToRadians(45)) catch unreachable;
+    g_proj.map_update();
 }
 
-pub fn xfit_size() void {
-    size_update_sem.post();
-}
+pub fn xfit_update() void {}
+
+pub fn xfit_size() void {}
 
 pub fn xfit_destroy() void {
     const ivertices = objects.items[0].*.get_ivertices(objects.items[0]);
