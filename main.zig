@@ -35,18 +35,16 @@ pub var objects_mem_pool: MemoryPool(graphics.dummy_object) = MemoryPool(graphic
 pub var indices_mem_pool: MemoryPool(graphics.dummy_indices) = MemoryPool(graphics.dummy_indices).init(allocator);
 
 pub var g_proj: graphics.projection = undefined;
-pub var g_camera = graphics.camera.init(.{ 0, 0, -3, 1 }, .{ 0, 0, 0, 1 }, .{ 0, 1, 0, 1 });
+pub var g_camera: graphics.camera = undefined;
 
 pub fn xfit_init() void {
     const vertices = graphics.take_vertices(*graphics.vertices(graphics.color_vertex_2d), vertices_mem_pool.create() catch unreachable);
     const indices = graphics.take_indices(*graphics.indices16, indices_mem_pool.create() catch unreachable);
     const object = graphics.take_object(*graphics.shape2d, objects_mem_pool.create() catch unreachable);
     g_proj = graphics.projection.init(.perspective, std.math.degreesToRadians(45)) catch unreachable;
+    g_camera = graphics.camera.init(.{ 0, 0, -3, 1 }, .{ 0, 0, 0, 1 }, .{ 0, 1, 0, 1 });
 
-    g_camera.build(.readwrite_cpu);
-    g_proj.build(.readwrite_cpu);
-
-    object.* = graphics.shape2d.init(&g_camera, &g_proj);
+    object.* = graphics.shape2d.init();
     vertices.* = graphics.vertices(graphics.color_vertex_2d).init(allocator);
     indices.* = graphics.indices.init(allocator);
     vertices.*.array.append(.{
@@ -69,6 +67,8 @@ pub fn xfit_init() void {
     vertices.*.build(.read_gpu);
     indices.*.build(.read_gpu);
 
+    object.interface.transform.camera = &g_camera;
+    object.interface.transform.projection = &g_proj;
     object.build(.readwrite_cpu);
 
     object.vertices = vertices;
@@ -101,8 +101,8 @@ pub fn xfit_destroy() void {
     ivertices.?.*.deinit(ivertices.?);
     iindices.?.*.deinit(iindices.?);
 
-    g_camera.clean();
-    g_proj.clean();
+    g_camera.deinit();
+    g_proj.deinit();
 
     objects.items[0].*.deinit();
     objects.deinit();
