@@ -114,7 +114,9 @@ pub fn xfit_destroy() void {
     g_camera.deinit();
     g_proj.deinit();
 
-    objects.items[0].*.deinit();
+    for (objects.items) |value| {
+        value.*.deinit();
+    }
     objects.deinit();
     vertices_mem_pool.deinit();
     objects_mem_pool.deinit();
