@@ -26,6 +26,8 @@ const math = @import("zig-game-engine-project/math.zig");
 const mem = @import("zig-game-engine-project/mem.zig");
 const matrix = math.matrix;
 const file = @import("zig-game-engine-project/file.zig");
+const webp = @import("zig-game-engine-project/webp.zig");
+const img = @import("zig-game-engine-project/img.zig");
 
 const graphics = @import("zig-game-engine-project/graphics.zig");
 
@@ -85,6 +87,16 @@ pub fn xfit_init() void {
     object3.*.interface.transform.map_update();
 
     graphics.scene = &objects.items;
+
+    const data = file.read_file("test.webp", allocator) catch unreachable;
+    defer allocator.free(data);
+    var ww: webp = .{};
+    ww.load_header(data) catch unreachable;
+    const out = allocator.alloc(u8, ww.width() * ww.height() * 4) catch unreachable;
+    defer allocator.free(out);
+    ww.decode(.RGBA, data, out) catch unreachable;
+
+    system.print("{d}\n", .{out.len});
 }
 
 ///윈도우 크기 바뀔때 xfit_update 바로 전 호출
